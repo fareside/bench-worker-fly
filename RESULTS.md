@@ -129,7 +129,7 @@ Using Welch's t-test (α = 0.05):
 - **FareSide**
 - **PayAI**
 
-*(Note: Coinbase does not support Solana)*
+*(Note: We could not manage to get CDP facilitator to work on Solana)*
 
 ### Performance Summary (Facilitation Time in ms)
 
