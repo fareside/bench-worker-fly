@@ -1,0 +1,32 @@
+{
+  "name": "bench-worker-fly",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "bench:pilot": "tsx src/scripts/benchmark-pilot.ts",
+    "bench:main": "tsx src/scripts/benchmark-main.ts 30",
+    "bench:solana:pilot": "tsx src/scripts/benchmark-solana-pilot.ts sequential",
+    "bench:solana:main": "tsx src/scripts/benchmark-solana-main.ts 30",
+    "bench:analyze": "tsx src/scripts/analyze-benchmark.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@coinbase/x402": "^2.1.0",
+    "@x402/evm": "^2.2.0",
+    "@x402/hono": "^2.2.0",
+    "@x402/svm": "^2.2.0",
+    "hono": "^4.11.7"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.10",
+    "@x402/fetch": "^2.2.0",
+    "dotenv": "^17.2.3",
+    "tsc": "^2.0.4",
+    "tsx": "^4.21.0"
+  }
+}
