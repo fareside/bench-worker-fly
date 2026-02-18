@@ -16,7 +16,7 @@ const MODE = (process.argv[2] || "concurrent") as "sequential" | "concurrent";
 // Facilitator endpoints for Base network
 const ENDPOINTS = [
   { facilitator: "FareSide Base", network: "base", path: "/fareside/base" },
-  { facilitator: "FareSide Radius Testnet", network: "base", path: "/fareside/radius-testnet" },
+  { facilitator: "FareSide Radius Testnet", network: "radius", path: "/fareside/radius-testnet" },
 ];
 
 // CSV header
