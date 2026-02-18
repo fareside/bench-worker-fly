@@ -28,6 +28,10 @@ ROOT_APP.get("/fareside/base", async (c) => {
   return handler(c, fareside.base);
 });
 
+ROOT_APP.get("/fareside/base-sepolia", async (c) => {
+  return handler(c, fareside.baseSepolia);
+});
+
 ROOT_APP.get("/fareside/radius-testnet", async (c) => {
   return handler(c, fareside.radiusTestnet);
 })

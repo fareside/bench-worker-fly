@@ -81,6 +81,24 @@ const base = () =>
     resourceServer,
   );
 
+const baseSepolia = () =>
+    paymentMiddleware(
+        {
+            "GET /fareside/base-sepolia": {
+                accepts: [
+                    {
+                        scheme: "exact",
+                        price: "$0.10",
+                        network: "eip155:84532",
+                        payTo: "0xfa3F54AE9C4287CA09a486dfaFaCe7d1d4095d93",
+                    },
+                ],
+                description: "Access to premium content",
+            },
+        },
+        resourceServer,
+    );
+
 const radiusTestnet = () =>
     paymentMiddleware(
         {
@@ -106,4 +124,4 @@ const radiusTestnet = () =>
         resourceServer,
     );
 
-export { base, solanaMainnet, solanaDevnet, radiusTestnet };
+export { base, baseSepolia, solanaMainnet, solanaDevnet, radiusTestnet };
