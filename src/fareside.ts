@@ -20,6 +20,7 @@ const resourceServer = new x402ResourceServer(
     .register("eip155:84532", new ExactEvmScheme())
     .register("eip155:8453", new ExactEvmScheme())
     .register("eip155:80002", new ExactEvmScheme())
+    .register("eip155:72344", new ExactEvmScheme())
     .register("solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp", new ExactSvmScheme())
     .register(
       "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1",
@@ -80,4 +81,29 @@ const base = () =>
     resourceServer,
   );
 
-export { base, solanaMainnet, solanaDevnet };
+const radiusTestnet = () =>
+    paymentMiddleware(
+        {
+            "GET /fareside/radius-testnet": {
+                accepts: [
+                    {
+                        scheme: "exact",
+                        price: {
+                            amount: "10",
+                            asset: "0x03CfF7ceB4c6e047CBC39125F3044c97d93669B2",
+                            extra: {
+                                name: "Test ERC20 EIP-3009",
+                                version: "1",
+                            }
+                        },
+                        network: "eip155:72344",
+                        payTo: "0xfa3F54AE9C4287CA09a486dfaFaCe7d1d4095d93",
+                    },
+                ],
+                description: "Access to premium content",
+            },
+        },
+        resourceServer,
+    );
+
+export { base, solanaMainnet, solanaDevnet, radiusTestnet };
