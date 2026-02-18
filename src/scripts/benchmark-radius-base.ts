@@ -15,7 +15,7 @@ const MODE = (process.argv[2] || "concurrent") as "sequential" | "concurrent";
 
 // Facilitator endpoints for Base network
 const ENDPOINTS = [
-  { facilitator: "FareSide Base", network: "base", path: "/fareside/base" },
+  { facilitator: "FareSide Base Sepolia", network: "base-sepolia", path: "/fareside/base-sepolia" },
   { facilitator: "FareSide Radius Testnet", network: "radius", path: "/fareside/radius-testnet" },
 ];
 
@@ -45,11 +45,11 @@ console.log("Buyer address:", account.address);
 const fetchWithPayment = wrapFetchWithPaymentFromConfig(fetch, {
   schemes: [
     {
-      network: "eip155:8453", // Base
+      network: "eip155:84532", // Base Sepolia
       client: new ExactEvmScheme(account),
     },
     {
-      network: "eip155:72344", // Base
+      network: "eip155:72344", // Radius Testnet
       client: new ExactEvmScheme(account),
     },
   ],
