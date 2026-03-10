@@ -131,7 +131,7 @@ const radiusMainnetSBC = () =>
           {
             scheme: "exact",
             price: {
-              amount: "10",
+              amount: "1",
               asset: "0x33ad9e4BD16B69B5BFdED37D8B5D9fF9aba014Fb",
               extra: {
                 assetTransferMethod: "permit2",

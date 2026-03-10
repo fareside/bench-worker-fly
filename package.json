@@ -17,6 +17,7 @@
   "type": "module",
   "dependencies": {
     "@coinbase/x402": "^2.1.0",
+    "@stablecoin.xyz/x402": "^0.3.1",
     "@x402/evm": "^2.2.0",
     "@x402/extensions": "^2.6.0",
     "@x402/hono": "^2.2.0",
