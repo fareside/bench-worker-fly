@@ -36,6 +36,10 @@ ROOT_APP.get("/fareside/radius-testnet", async (c) => {
   return handler(c, fareside.radiusTestnet);
 })
 
+ROOT_APP.get("/fareside/radius-mainnet-sbc", async (c) => {
+  return handler(c, fareside.radiusMainnetSBC);
+})
+
 ROOT_APP.get("/payai/solana-mainnet", async (c) => {
   return handler(c, payai.solanaMainnet);
 });

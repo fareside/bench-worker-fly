@@ -124,4 +124,30 @@ const radiusTestnet = () =>
         resourceServer,
     );
 
-export { base, baseSepolia, solanaMainnet, solanaDevnet, radiusTestnet };
+const radiusMainnetSBC = () =>
+    paymentMiddleware(
+        {
+            "GET /fareside/radius-mainnet-sbc": {
+                accepts: [
+                    {
+                        scheme: "exact",
+                        price: {
+                            amount: "10",
+                            asset: "0x33ad9e4BD16B69B5BFdED37D8B5D9fF9aba014Fb",
+                            extra: {
+                                assetTransferMethod: "permit2",
+                                name: "Stable Coin",
+                                version: "1",
+                            },
+                        },
+                        network: "eip155:723",
+                        payTo: "0xfa3F54AE9C4287CA09a486dfaFaCe7d1d4095d93",
+                    },
+                ],
+                description: "Access to premium content",
+            },
+        },
+        resourceServer,
+    );
+
+export { base, baseSepolia, solanaMainnet, solanaDevnet, radiusTestnet, radiusMainnetSBC };
