@@ -2,6 +2,7 @@ import { paymentMiddleware, x402ResourceServer } from "@x402/hono";
 import { HTTPFacilitatorClient } from "@x402/core/server";
 import { ExactEvmScheme } from "@x402/evm/exact/server";
 import { ExactSvmScheme } from "@x402/svm/exact/server";
+import { declareEip2612GasSponsoringExtension } from "@x402/extensions";
 import * as dotenv from "dotenv";
 
 dotenv.config();
@@ -13,19 +14,17 @@ if (!FARESIDE_FACILITATOR_ENDPOINT) {
 }
 
 const resourceServer = new x402ResourceServer(
-    new HTTPFacilitatorClient({
-      url: FARESIDE_FACILITATOR_ENDPOINT,
-    }),
-  )
-    .register("eip155:84532", new ExactEvmScheme())
-    .register("eip155:8453", new ExactEvmScheme())
-    .register("eip155:80002", new ExactEvmScheme())
-    .register("eip155:72344", new ExactEvmScheme())
-    .register("solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp", new ExactSvmScheme())
-    .register(
-      "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1",
-      new ExactSvmScheme(),
-    );
+  new HTTPFacilitatorClient({
+    url: FARESIDE_FACILITATOR_ENDPOINT,
+  }),
+)
+  .register("eip155:84532", new ExactEvmScheme())
+  .register("eip155:8453", new ExactEvmScheme())
+  .register("eip155:80002", new ExactEvmScheme())
+  .register("eip155:72344", new ExactEvmScheme())
+  .register("eip155:723", new ExactEvmScheme())
+  .register("solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp", new ExactSvmScheme())
+  .register("solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1", new ExactSvmScheme());
 
 const solanaMainnet = () =>
   paymentMiddleware(
@@ -42,7 +41,7 @@ const solanaMainnet = () =>
         description: "Access to premium content",
       },
     },
-    resourceServer
+    resourceServer,
   );
 
 const solanaDevnet = () =>
@@ -82,72 +81,80 @@ const base = () =>
   );
 
 const baseSepolia = () =>
-    paymentMiddleware(
-        {
-            "GET /fareside/base-sepolia": {
-                accepts: [
-                    {
-                        scheme: "exact",
-                        price: "$0.10",
-                        network: "eip155:84532",
-                        payTo: "0xfa3F54AE9C4287CA09a486dfaFaCe7d1d4095d93",
-                    },
-                ],
-                description: "Access to premium content",
-            },
-        },
-        resourceServer,
-    );
+  paymentMiddleware(
+    {
+      "GET /fareside/base-sepolia": {
+        accepts: [
+          {
+            scheme: "exact",
+            price: "$0.10",
+            network: "eip155:84532",
+            payTo: "0xfa3F54AE9C4287CA09a486dfaFaCe7d1d4095d93",
+          },
+        ],
+        description: "Access to premium content",
+      },
+    },
+    resourceServer,
+  );
 
 const radiusTestnet = () =>
-    paymentMiddleware(
-        {
-            "GET /fareside/radius-testnet": {
-                accepts: [
-                    {
-                        scheme: "exact",
-                        price: {
-                            amount: "10",
-                            asset: "0x03CfF7ceB4c6e047CBC39125F3044c97d93669B2",
-                            extra: {
-                                name: "Test ERC20 EIP-3009",
-                                version: "1",
-                            }
-                        },
-                        network: "eip155:72344",
-                        payTo: "0xfa3F54AE9C4287CA09a486dfaFaCe7d1d4095d93",
-                    },
-                ],
-                description: "Access to premium content",
+  paymentMiddleware(
+    {
+      "GET /fareside/radius-testnet": {
+        accepts: [
+          {
+            scheme: "exact",
+            price: {
+              amount: "10",
+              asset: "0x03CfF7ceB4c6e047CBC39125F3044c97d93669B2",
+              extra: {
+                name: "Test ERC20 EIP-3009",
+                version: "1",
+              },
             },
-        },
-        resourceServer,
-    );
+            network: "eip155:72344",
+            payTo: "0xfa3F54AE9C4287CA09a486dfaFaCe7d1d4095d93",
+          },
+        ],
+        description: "Access to premium content",
+      },
+    },
+    resourceServer,
+  );
 
 const radiusMainnetSBC = () =>
-    paymentMiddleware(
-        {
-            "GET /fareside/radius-mainnet-sbc": {
-                accepts: [
-                    {
-                        scheme: "exact",
-                        price: {
-                            amount: "10",
-                            asset: "0x33ad9e4BD16B69B5BFdED37D8B5D9fF9aba014Fb",
-                            extra: {
-                                assetTransferMethod: "permit2",
-                                name: "Stable Coin",
-                                version: "1",
-                            },
-                        },
-                        network: "eip155:723",
-                        payTo: "0xfa3F54AE9C4287CA09a486dfaFaCe7d1d4095d93",
-                    },
-                ],
-                description: "Access to premium content",
+  paymentMiddleware(
+    {
+      "GET /fareside/radius-mainnet-sbc": {
+        accepts: [
+          {
+            scheme: "exact",
+            price: {
+              amount: "10",
+              asset: "0x33ad9e4BD16B69B5BFdED37D8B5D9fF9aba014Fb",
+              extra: {
+                assetTransferMethod: "permit2",
+                name: "Stable Coin",
+                version: "1",
+              },
             },
-        },
-        resourceServer,
-    );
+            network: "eip155:723",
+            payTo: "0xfa3F54AE9C4287CA09a486dfaFaCe7d1d4095d93",
+          },
+        ],
+        extensions: declareEip2612GasSponsoringExtension(),
+        description: "Access to premium content",
+      },
+    },
+    resourceServer,
+  );
 
-export { base, baseSepolia, solanaMainnet, solanaDevnet, radiusTestnet, radiusMainnetSBC };
+export {
+  base,
+  baseSepolia,
+  solanaMainnet,
+  solanaDevnet,
+  radiusTestnet,
+  radiusMainnetSBC,
+};
