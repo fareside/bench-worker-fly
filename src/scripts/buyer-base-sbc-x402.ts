@@ -47,4 +47,4 @@ export async function doFetch(facilitator: string, endpoint: string) {
   }
 }
 
-await doFetch("FareSide", "https://bench-worker-fly.fly.dev/base-sbc")
+await doFetch("FareSide", "https://bench-worker-fly.fly.dev/fareside/base-sbc")
