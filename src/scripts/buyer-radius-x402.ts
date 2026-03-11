@@ -9,11 +9,6 @@ dotenv.config();
 
 const ENDPOINT_X402 = new URL("/fareside/radius-mainnet-sbc", "https://bench-worker-fly.fly.dev/");
 
-const EVM_BUYER_PRIVATE_KEY = process.env.EVM_BUYER_PRIVATE_KEY as unknown as undefined | `0x${string}`;
-if (!EVM_BUYER_PRIVATE_KEY) {
-  throw new Error("EVM_BUYER_PRIVATE_KEY is required");
-}
-const account = privateKeyToAccount(EVM_BUYER_PRIVATE_KEY);
 const RADIUS_HTTP = "https://rpc.radiustech.xyz/"
 const radius = defineChain({
   id: 723,
@@ -27,19 +22,67 @@ const radiusMainnetPublicClient = createPublicClient({
   chain: radius,
   transport: http(),
 });
-console.log("Buyer address", account.address);
 
-// Wrap the fetch function with payment handling
-const fetchWithPayment = wrapFetchWithPaymentFromConfig(fetch, {
-  schemes: [
-    {
-      network: "eip155:723", // Radius Mainnet
-      client: new ExactEvmScheme(toClientEvmSigner(account, radiusMainnetPublicClient)),
-    },
-  ],
+
+const EVM_PRIVATE_KEYS = process.env.EVM_PRIVATE_KEYS as unknown as undefined | string;
+if (!EVM_PRIVATE_KEYS) {
+  throw new Error("EVM_PRIVATE_KEYS is required");
+}
+const fetchWithPayment = EVM_PRIVATE_KEYS.split(",").map(pk => {
+  const account = privateKeyToAccount(pk as `0x${string}`);
+  console.log("Buyer address", account.address);
+  const f = wrapFetchWithPaymentFromConfig(fetch, {
+    schemes: [
+      {
+        network: "eip155:723", // Radius Mainnet
+        client: new ExactEvmScheme(toClientEvmSigner(account, radiusMainnetPublicClient)),
+      },
+    ],
+  });
+  return async (...args: Parameters<typeof f>) => {
+    console.log("Fetching with address", account.address);
+    const r = await f(...args)
+    console.log("Fetching with address", account.address, r.status, r.statusText);
+    const paymentResponse = r.headers.get('payment-response')
+    if (paymentResponse) {
+      const r = Buffer.from(paymentResponse, 'base64').toString('utf-8')
+      const j = JSON.parse(r)
+      console.log("Payment response", j);
+    }
+    return r
+  }
 });
 
-const response = await fetchWithPayment(ENDPOINT_X402.href, {
-  method: "GET",
-});
-console.log("response", await response.text());
+export async function doFetch(fetchWithPayment: typeof fetch, endpoint: string) {
+  const start = Date.now();
+  const response = await fetchWithPayment(endpoint, {
+    method: "GET",
+  });
+  if (response.status !== 200) {
+    const text = await response.text();
+    console.log("Error Received: ", text);
+    return {
+      facilitation: 0,
+      roundtrip: 0,
+    }
+  }
+  const json = await response.json();
+  const end = Date.now();
+  const elapsed = (json as {elapsed: number}).elapsed;
+  // console.log(`${facilitator}: facilitation`, elapsed);
+  // console.log(`${facilitator}: roundtrip`, end - start);
+  return {
+    facilitation: elapsed,
+    roundtrip: end - start,
+  }
+}
+
+
+const ENDPOINT = "https://bench-worker-fly.fly.dev/fareside/radius-mainnet-sbc"
+const promises = fetchWithPayment.map(async f => {
+  return doFetch(f, ENDPOINT)
+})
+const p2 = await Promise.all(promises)
+p2.forEach(p => {
+  console.log(p);
+})
