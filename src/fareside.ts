@@ -150,6 +150,33 @@ const radiusMainnetSBC = () =>
     resourceServer,
   );
 
+const baseSBC = () =>
+    paymentMiddleware(
+        {
+          "GET /fareside/base-sbc": {
+            accepts: [
+              {
+                scheme: "exact",
+                price: {
+                  amount: "1",
+                  asset: "0xfdcC3dd6671eaB0709A4C0f3F53De9a333d80798",
+                  extra: {
+                    assetTransferMethod: "permit2",
+                    name: "Stable Coin",
+                    version: "1",
+                  },
+                },
+                network: "eip155:8453",
+                payTo: "0xfa3F54AE9C4287CA09a486dfaFaCe7d1d4095d93",
+              },
+            ],
+            extensions: declareEip2612GasSponsoringExtension(),
+            description: "Access to premium content",
+          },
+        },
+        resourceServer,
+    );
+
 export {
   base,
   baseSepolia,
@@ -157,4 +184,5 @@ export {
   solanaDevnet,
   radiusTestnet,
   radiusMainnetSBC,
+  baseSBC,
 };

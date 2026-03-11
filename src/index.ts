@@ -45,7 +45,11 @@ ROOT_APP.get("/fareside/radius-mainnet-sbc", async (c) => {
   return handler(c, fareside.radiusMainnetSBC);
 })
 
-const mw = x402Middleware({ payTo: "0xfa3F54AE9C4287CA09a486dfaFaCe7d1d4095d93", amount: "1", network: "radius" })
+ROOT_APP.get("/fareside/base-sbc", async (c) => {
+  return handler(c, fareside.baseSBC);
+})
+
+const mwRadius = x402Middleware({ payTo: "0xfa3F54AE9C4287CA09a486dfaFaCe7d1d4095d93", amount: "1", network: "radius" })
 ROOT_APP.get("/sbc-xyz/radius-mainnet-sbc", async (c) => {
   // @ts-expect-error
   const headers = Object.fromEntries(c.req.raw.headers.entries());
@@ -56,7 +60,41 @@ ROOT_APP.get("/sbc-xyz/radius-mainnet-sbc", async (c) => {
   const res = httpMocks.createResponse()
   const start = new Date().valueOf();
   await new Promise<void>(async (resolve, reject) => {
-    await mw(req, res, () => {
+    await mwRadius(req, res, () => {
+      resolve()
+    })
+    resolve()
+  })
+  const elapsed = Date.now() - start;
+  const resHeaders = res._getHeaders();
+  for (const [key, value] of Object.entries(resHeaders)) {
+    c.header(key, value as string)
+  }
+  c.status(res._getStatusCode())
+  let resJSON: any;
+  try {
+    resJSON = res._getJSONData();
+  } catch (e) {
+    resJSON = null
+  }
+  if (resJSON) {
+    return c.json(resJSON)
+  }
+  return c.json({"elapsed": elapsed})
+})
+
+const mwBase = x402Middleware({ payTo: "0xfa3F54AE9C4287CA09a486dfaFaCe7d1d4095d93", amount: "1", network: "base" })
+ROOT_APP.get("/sbc-xyz/base-sbc", async (c) => {
+  // @ts-expect-error
+  const headers = Object.fromEntries(c.req.raw.headers.entries());
+  const req = httpMocks.createRequest({
+    headers,
+    url: c.req.url,
+  })
+  const res = httpMocks.createResponse()
+  const start = new Date().valueOf();
+  await new Promise<void>(async (resolve, reject) => {
+    await mwBase(req, res, () => {
       resolve()
     })
     resolve()
