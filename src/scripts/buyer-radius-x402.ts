@@ -7,6 +7,7 @@ import { createPublicClient, createWalletClient, defineChain, http, type Hex } f
 
 dotenv.config();
 
+const N = undefined;
 const ENDPOINT_X402 = new URL("/fareside/radius-mainnet-sbc", "https://bench-worker-fly.fly.dev/");
 
 const RADIUS_HTTP = "https://rpc.radiustech.xyz/"
@@ -78,9 +79,8 @@ export async function doFetch(fetchWithPayment: typeof fetch, endpoint: string) 
 }
 
 
-const ENDPOINT = "https://bench-worker-fly.fly.dev/fareside/radius-mainnet-sbc"
-const promises = fetchWithPayment.map(async f => {
-  return doFetch(f, ENDPOINT)
+const promises = fetchWithPayment.slice(0, N).map(async f => {
+  return doFetch(f, ENDPOINT_X402.href)
 })
 const p2 = await Promise.all(promises)
 p2.forEach(p => {
