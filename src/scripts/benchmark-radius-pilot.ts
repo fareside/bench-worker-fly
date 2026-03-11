@@ -70,7 +70,7 @@ console.log("Buyer address:", account.address);
 // Setup @x402 client (wrapFetchWithPaymentFromConfig)
 const radiusMainnetPublicClient = createPublicClient({
   chain: radius,
-  transport: http(),
+  transport: http(RADIUS_HTTP),
 });
 const fetchWithPaymentX402 = wrapFetchWithPaymentFromConfig(fetch, {
   schemes: [
