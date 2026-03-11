@@ -17,6 +17,9 @@ async function handler(c: Context, middleware: () => MiddlewareHandler) {
   if (result) {
     return result;
   }
+  if (!c.res.ok) {
+    return c.res
+  }
   return c.json({
     elapsed: time,
   });
