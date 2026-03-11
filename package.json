@@ -7,6 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "bench:pilot": "tsx src/scripts/benchmark-pilot.ts",
     "bench:radius:pilot": "tsx src/scripts/benchmark-radius-pilot.ts sequential",
+    "bench:base:sbc:pilot": "tsx src/scripts/benchmark-base-sbc-sbc-vs-x402-pilot.ts sequential",
     "bench:main": "tsx src/scripts/benchmark-main.ts 30",
     "bench:solana:pilot": "tsx src/scripts/benchmark-solana-pilot.ts sequential",
     "bench:solana:main": "tsx src/scripts/benchmark-solana-main.ts 30",
